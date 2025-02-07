@@ -39,6 +39,7 @@ src/
 ├── package.json         # Dependencies & scripts
 ├── README.md            # Documentation
 ```
+```
 🚀 Getting Started
 
 1️⃣ Prerequisites
@@ -70,6 +71,7 @@ Start the development server:
 npm run dev
 
 📡 API Routes
+
 Health Check
 GET /api/health - Check if the server is running
 Auth Routes
@@ -84,6 +86,7 @@ DELETE /api/forms/:id - Delete form
 Form Submissions
 POST /api/forms/:id/submit - Submit a form
 GET /api/forms/:id/submissions - Get form submissions
+
 🛠 Technologies Used
 Node.js - JavaScript runtime
 Express.js - Backend framework
@@ -92,7 +95,7 @@ JWT - Authentication
 Zod - Input validation
 Dotenv - Environment management
 Prettier - Code formatting
-👥 Contributors
-Your Name
+
 📜 License
 This project is licensed under the MIT License.
+```
