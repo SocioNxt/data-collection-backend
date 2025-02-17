@@ -211,15 +211,18 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 })
 
-const getCurrentUser = asyncHandler(async(req, res) => {
-    return res
-    .status(200)
-    .json(new ApiResponse(
-        200,
-        req.user,
-        "User fetched successfully"
-    ))
-})
+const getCurrentUser = asyncHandler(async (req, res) => {
+    const accessToken = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
+    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+    return res.status(200).json(
+        new ApiResponse(200, { 
+            user: req.user, 
+            accessToken, 
+            refreshToken 
+        }, "User fetched successfully")
+    );
+});
 
 export {
     registerUser,
