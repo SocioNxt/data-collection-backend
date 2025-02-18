@@ -49,7 +49,7 @@ const swaggerOptions = {
 const allowedOrigins = [
   "http://localhost:3000",
   "https://data-collection-admin-mettasocial.vercel.app",
-  "https://data-collection-admin-fl7163qq4.vercel.app"
+  "https://data-collection-admin.vercel.app"
 ];
 
 app.use(
