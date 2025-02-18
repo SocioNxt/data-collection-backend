@@ -47,7 +47,8 @@ const swaggerOptions = {
 
 // Middleware
 const allowedOrigins = [
-  "http://localhost:3000"
+  "http://localhost:3000",
+  "https://data-collection-admin-mettasocial.vercel.app"
 ];
 
 app.use(
