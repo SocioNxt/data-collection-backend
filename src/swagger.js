@@ -12,7 +12,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "http://localhost:8000", // Update with your actual server URL
+        url: "https://data-collection-backend-ax9m.onrender.com", // Update with your actual server URL
         description: "Local server",
       },
     ],
