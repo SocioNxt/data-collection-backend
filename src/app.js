@@ -1,9 +1,49 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import setupSwagger from "./swagger.js";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 const app = express();
+
+// Swagger configuration
+const swaggerOptions = {
+    definition: {
+      openapi: "3.0.0",
+      info: {
+        title: "Data Collection Backend",
+        version: "1.0.0",
+        description: "API documentation for your backend project",
+      },
+      servers: [
+        {
+          url: "https://data-collection-backend-three.vercel.app/",
+          description: "Production Server",
+        },
+        {
+          url: "http://localhost:8000",
+          description: "Local Development Server",
+        },
+      ],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
+      },
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+    },
+    apis: ["./src/routes/*.js"], // Path to your route files
+  };
+  
+  const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Middleware
 const allowedOrigins = [
@@ -26,9 +66,6 @@ app.use(cookieParser());
 app.options("*", cors());
 
 
-// Setup Swagger
-setupSwagger(app);
-
 // Routes import
 import userRouter from "./routes/user.routes.js";
 import formRouter from "./routes/form.routes.js";
@@ -40,5 +77,8 @@ app.use("/api/healthcheck", healthcheckRouter);
 app.use("/api/users", userRouter);
 app.use("/api/forms", formRouter);
 app.use("/api/form-submissions", formSubmissionRouter);
+
+// Swagger UI setup
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export { app };
