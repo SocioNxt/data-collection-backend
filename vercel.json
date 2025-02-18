@@ -12,7 +12,7 @@
         "dest": "src/index.js",
         "headers": {
             "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Allow-Origin": "https://data-collection-admin-bsmqbgpay.vercel.app",
+            "Access-Control-Allow-Origin": "https://data-collection-admin-fl7163qq4.vercel.app",
             "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
             "Access-Control-Allow-Headers": "Content-Type, Authorization"
         }
