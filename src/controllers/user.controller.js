@@ -86,7 +86,9 @@ const loginUser = asyncHandler(async (req, res) =>{
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        sameSite: "None",
+        path: "/"
     }
 
     return res
@@ -127,7 +129,12 @@ const coordinatorLogin = asyncHandler(async (req, res) => {
   
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
   
-    const options = { httpOnly: true, secure: true };
+    const options = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        path: "/"
+    }
   
     return res
       .status(200)
@@ -153,7 +160,9 @@ const logoutUser = asyncHandler(async(req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        sameSite: "None",
+        path: "/"
     }
 
     return res
@@ -189,7 +198,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     
         const options = {
             httpOnly: true,
-            secure: true
+            secure: true,
+            sameSite: "None",
+            path: "/"
         }
     
         const {accessToken, newRefreshToken} = await generateAccessAndRefereshTokens(user._id)
