@@ -21,4 +21,87 @@ router.get('/:formId', verifyJWT, getFormSubmissions);
 // Get a single submission by ID
 router.get('/single/:submissionId', verifyJWT, getSubmissionById);
 
+/**
+ * @swagger
+ * /api/form-submissions/submit:
+ *   post:
+ *     summary: Submit a new form
+ *     tags:
+ *       - Form Submission Endpoints
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               formUrl:
+ *                 type: string
+ *               content:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *             required:
+ *               - formUrl
+ *               - content
+ *     responses:
+ *       201:
+ *         description: Form submitted successfully
+ *       404:
+ *         description: Form not found
+ *       500:
+ *         description: Failed to submit form
+ */
+
+/**
+ * @swagger
+ * /api/form-submissions/{formId}:
+ *   get:
+ *     summary: Get all submissions for a form
+ *     tags:
+ *       - Form Submission Endpoints
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: formId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the form
+ *     responses:
+ *       200:
+ *         description: Submissions fetched successfully
+ *       500:
+ *         description: Failed to fetch submissions
+ */
+
+/**
+ * @swagger
+ * /api/form-submissions/single/{submissionId}:
+ *   get:
+ *     summary: Get a single submission by ID
+ *     tags:
+ *       - Form Submission Endpoints
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: submissionId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the form submission
+ *     responses:
+ *       200:
+ *         description: Submission fetched successfully
+ *       404:
+ *         description: Submission not found
+ *       500:
+ *         description: Failed to fetch submission
+ */
+
+
 export default router;
