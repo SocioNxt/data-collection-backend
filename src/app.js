@@ -17,12 +17,16 @@ const swaggerOptions = {
       },
       servers: [
         {
-          url: "https://data-collection-backend-three.vercel.app/",
+          url: "https://data-collection-backend-mettasocial.vercel.app",
           description: "Production Server",
         },
         {
           url: "http://localhost:8000",
           description: "Local Development Server",
+        },
+        {
+          url: "https://data-collection-admin.vercel.app",
+          description: "Develop Development Server",
         },
       ],
       components: {
@@ -49,7 +53,7 @@ const swaggerOptions = {
 const allowedOrigins = [
   "http://localhost:3000",
   "https://data-collection-admin-mettasocial.vercel.app",
-  "https://data-collection-admin.vercel.app"
+  "https://data-collection-backend-mettasocial.vercel.app"
 ];
 
 app.use(

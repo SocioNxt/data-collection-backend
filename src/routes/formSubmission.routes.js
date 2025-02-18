@@ -5,10 +5,22 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://data-collection-admin-mettasocial.vercel.app",
+  "https://data-collection-backend-mettasocial.vercel.app"
+];
+
 // Middleware to set CORS headers (if not using cors() globally)
 router.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  }
   next();
 });
 
