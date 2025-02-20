@@ -117,5 +117,30 @@ router.get('/update_records/:formId', updatingFormSubmissionList);
  *         description: Failed to fetch submission
  */
 
+/**
+ * @swagger
+ * /api/form-submissions/update_records/{formId}:
+ *   get:
+ *     summary: Get a form Id by _id
+ *     tags:
+ *       - Form Submission Endpoints
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: formId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the form submission
+ *     responses:
+ *       200:
+ *         description: Submission fetched successfully
+ *       404:
+ *         description: Submission not found
+ *       500:
+ *         description: Failed to fetch submission
+ */
+
 
 export default router;

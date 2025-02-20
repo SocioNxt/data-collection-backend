@@ -118,16 +118,22 @@ export const updatingFormSubmissionList = async (req, res) => {
 
     // Extract all _ids
     const submissionIds = submissions.map(submission => submission._id);
+    const submissionCount = submissionIds.length;
+
     console.log('Submission count:', submissionIds.length);
 
     // Update formSubmissions field in Form document
     const updatedForm = await Form.findByIdAndUpdate(
       formId,
-      { $set: { formSubmissions: submissionIds } }, // Update formSubmissions array
-      { new: true } // Return updated document
+      { $set: { formSubmissions: submissionIds, submissions: submissionCount } },
+      { new: true }
     );
 
-    console.log('Updated Form:',  );
+    if (!updatedForm) {
+      return res.status(404).json({ success: false, error: 'Form not found' });
+    }
+
+    console.log('Updated Form:', updatedForm);
 
     res.status(200).json({ success: true, updatedForm });
   } catch (error) {
