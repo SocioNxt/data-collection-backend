@@ -1,5 +1,5 @@
 import express from 'express';
-import { submitForm, getFormSubmissions, getSubmissionById } from '../controllers/formSubmission.controller.js';
+import { submitForm, getFormSubmissions, getSubmissionById, updatingFormSubmissionList } from '../controllers/formSubmission.controller.js';
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -32,6 +32,8 @@ router.get('/:formId', verifyJWT, getFormSubmissions);
 
 // Get a single submission by ID
 router.get('/single/:submissionId', verifyJWT, getSubmissionById);
+
+router.get('/update_records/:formId', updatingFormSubmissionList);
 
 /**
  * @swagger

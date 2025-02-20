@@ -108,3 +108,32 @@ export const getSubmissionById = async (req, res) => {
     res.status(500).json({ success: false, error: 'Failed to fetch submission' });
   }
 };
+
+
+//Correct the formsubssion list data
+export const updatingFormSubmissionList = async (req, res) => {
+  try {
+    const { formId } = req.params;
+    const submissions = await FormSubmission.find({ formId: formId });
+
+    // Extract all _ids
+    const submissionIds = submissions.map(submission => submission._id);
+    console.log('Submission count:', submissionIds.length);
+
+    // Update formSubmissions field in Form document
+    const updatedForm = await Form.findByIdAndUpdate(
+      formId,
+      { $set: { formSubmissions: submissionIds } }, // Update formSubmissions array
+      { new: true } // Return updated document
+    );
+
+    console.log('Updated Form:',  );
+
+    res.status(200).json({ success: true, updatedForm });
+  } catch (error) {
+    console.error('Error Updating records:', error);
+    res.status(500).json({ success: false, error: 'Failed to update form submissions' });
+  }
+};
+
+
