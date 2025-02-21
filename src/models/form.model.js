@@ -64,6 +64,10 @@ const FormSchema = new mongoose.Schema(
       default: "",
     },
     formSubmissions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FormSubmission'}],
+    createdBy: {
+      type: String,
+      default: "",
+    }
   },
   {
     timestamps: true,

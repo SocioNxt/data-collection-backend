@@ -78,7 +78,7 @@ export const getFormSubmissions = async (req, res) => {
     const form = await Form.findOne({
         $or: [ {userId: req.user._id}, {coordinatorId: req.user._id}],
         _id: formId
-    }).populate({
+    }).select("-_id").populate({
         path: 'formSubmissions', 
         match: { formId },
         options: { sort: { createdAt: -1 } },

@@ -55,7 +55,7 @@ const updateFormContent = asyncHandler(async (req, res) => {
   try {
     const updatedForm = await Form.findOneAndUpdate(
       { formId: req.params.formId, userId: req.user._id },
-      { $set: { formFields: req.body} },
+      { $set: { formFields: req.body, createdBy: req.user.username } },
       { new: true }
     );
     if (!updatedForm) throw new ApiError(404, "Form not found");
