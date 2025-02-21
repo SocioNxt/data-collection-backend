@@ -7,8 +7,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 // Get Form Stats
 const getFormStats = asyncHandler(async (req, res) => {
   try {
-    const totalForms = await Form.countDocuments({ userId: req.user._id });
-    const publishedForms = await Form.countDocuments({ userId: req.user._id, published: true });
+    const totalForms = await Form.countDocuments({ $or: [ {userId: req.user._id}, {coordinatorId: req.user._id}] });
+    const publishedForms = await Form.countDocuments({ $or: [ {userId: req.user._id}, {coordinatorId: req.user._id}], published: true });
     res.json(new ApiResponse(200, { totalForms, publishedForms }, "Form stats fetched successfully"));
   } catch (error) {
     throw new ApiError(500, "Server Error", error);
