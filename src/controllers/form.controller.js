@@ -3,6 +3,14 @@ import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import {generateIdFromLabel} from "../utils/idGenerator.js";
+
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
 
 // Get Form Stats
 const getFormStats = asyncHandler(async (req, res) => {
@@ -115,6 +123,79 @@ const getFormContentByUrl = asyncHandler(async (req, res) => {
   }
 });
 
+// AI-Powered Form Creation
+const generateFormWithAI = async (req, res) => {
+  try {
+    const { domainName, formFieldType, formName } = req.body;
+
+    if (!domainName || !formFieldType) {
+      return res.status(400).json({ error: "Missing required parameters: domainName or formFieldType" });
+    }
+
+    const prompt = `
+    You are an expert in designing dynamic web forms.
+
+    Based on the domain "${domainName}", generate a JSON schema for a form that collects relevant data.
+
+    **Important Rules**:
+    - Only use these field types: 
+      **"TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField", "SpacerField", "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader", "RadioField", "MultiSelectCheckboxField".**
+    - **DO NOT** include "Button", "Submit", or any other field types.
+    - Ensure a structured JSON response with domain-relevant fields.
+
+    Example:
+    [
+      {
+        "id": "full_name",
+        "type": "TextField",
+        "extraAttributes": {
+          "label": "Full Name",
+          "required": true,
+          "placeHolder": "Enter your full name"
+        }
+      }
+    ]
+
+    **Only return JSON. Do NOT include explanations or markdown formatting.**
+    `;
+
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(prompt);
+    let responseText = await result.response.text();
+
+    responseText = responseText.replace(/```json|```/g, "").trim();
+
+    const generatedFields = JSON.parse(responseText);
+
+    // Remove any invalid field types (extra safety check)
+    const allowedTypes = [
+      "TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField", "SpacerField",
+      "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader",
+      "RadioField", "MultiSelectCheckboxField"
+    ];
+    
+    const filteredFields = generatedFields.filter(field => allowedTypes.includes(field.type));
+
+    const formId = generateIdFromLabel(domainName);
+    
+    const newForm = new Form({
+      userId: req.user._id,
+      formName: formName,
+      formId: formId,
+      formDomain: domainName,
+      formFields: filteredFields,
+      createdBy: req.user.username,
+    });
+
+    await newForm.save();
+
+    res.status(201).json({ success: true, message: "Form created successfully", data: newForm });
+  } catch (error) {
+    console.error("Error generating form with Gemini AI:", error);
+    res.status(500).json({ error: "Failed to generate form", details: error.message });
+  }
+};
+
 export {
     getFormBySlug,
     createForm,
@@ -122,5 +203,6 @@ export {
     publishForm,
     getFormContentByUrl,
     getFormStats,
-    updateFormContent
+    updateFormContent,
+    generateFormWithAI
 }

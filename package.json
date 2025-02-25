@@ -23,6 +23,7 @@
     "prettier": "^3.4.2"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.22.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -30,6 +31,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.0",
+    "nanoid": "^5.1.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.5"

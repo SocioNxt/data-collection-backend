@@ -7,6 +7,7 @@ import {
   updateFormContent,
   publishForm,
   getFormContentByUrl,
+  generateFormWithAI
 } from "../controllers/form.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -20,7 +21,7 @@ const allowedOrigins = [
 
 router.use((req, res, next) => {
   const origin = req.headers.origin;
-  
+
   if (allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
     res.header("Access-Control-Allow-Credentials", "true");
@@ -39,6 +40,8 @@ router.put("/:formId/publish", verifyJWT, publishForm);
 router.get("/url/:url", verifyJWT, getFormContentByUrl);
 
 router.route('/').get(verifyJWT, getForms);
+
+router.post("/generate-ai-form", verifyJWT, generateFormWithAI);
 
 /**
  * @swagger
@@ -225,6 +228,59 @@ router.route('/').get(verifyJWT, getForms);
  *         description: Form not found
  *       500:
  *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/forms/generate-ai-form:
+ *   post:
+ *     summary: Generate form fields using AI
+ *     description: Generates a form schema based on the given domain using OpenAI
+ *     tags: [Forms]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               domainName:
+ *                 type: string
+ *                 example: Healthcare
+ *               formFieldType:
+ *                 type: object
+ *                 example:
+ *                   name: text
+ *                   age: number
+ *                   gender: radio
+ *                   symptoms: textarea
+ *     responses:
+ *       201:
+ *         description: Form generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   example:
+ *                     formName: "Auto-Generated Healthcare Form"
+ *                     formId: "1234-5678-9101"
+ *                     formDomain: "Healthcare"
+ *                     formFields:
+ *                       - label: "Full Name"
+ *                         type: "text"
+ *                         required: true
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Internal Server Error
  */
 
 
