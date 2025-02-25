@@ -4,7 +4,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import {generateIdFromLabel} from "../utils/idGenerator.js";
 
 import dotenv from "dotenv";
 
@@ -126,7 +125,7 @@ const getFormContentByUrl = asyncHandler(async (req, res) => {
 // AI-Powered Form Creation
 const generateFormWithAI = async (req, res) => {
   try {
-    const { domainName, formFieldType, formName } = req.body;
+    const { domainName, formFieldType, formName, formId } = req.body;
 
     if (!domainName || !formFieldType) {
       return res.status(400).json({ error: "Missing required parameters: domainName or formFieldType" });
@@ -142,6 +141,7 @@ const generateFormWithAI = async (req, res) => {
       **"TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField", "SpacerField", "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader", "RadioField", "MultiSelectCheckboxField".**
     - **DO NOT** include "Button", "Submit", or any other field types.
     - Ensure a structured JSON response with domain-relevant fields.
+    - For "SelectField" and "MultiSelectCheckboxField", return 'options' as a simple **array of strings**, NOT objects.
 
     Example:
     [
@@ -152,6 +152,21 @@ const generateFormWithAI = async (req, res) => {
           "label": "Full Name",
           "required": true,
           "placeHolder": "Enter your full name"
+        }
+      },
+      {
+        "id": "van_type",
+        "type": "SelectField",
+        "extraAttributes": {
+          "label": "Van Type",
+          "required": true,
+          "placeHolder": "Select the type of health van",
+          "options": [
+            "Mobile Clinic",
+            "Dental Van",
+            "Eye Care Van",
+            "Medical Testing Van"
+          ]
         }
       }
     ]
@@ -165,7 +180,18 @@ const generateFormWithAI = async (req, res) => {
 
     responseText = responseText.replace(/```json|```/g, "").trim();
 
-    const generatedFields = JSON.parse(responseText);
+    let generatedFields = JSON.parse(responseText);
+
+    generatedFields = generatedFields.map(field => {
+      if (["SelectField", "MultiSelectCheckboxField", "RadioField"].includes(field.type)) {
+        if (Array.isArray(field.extraAttributes?.options)) {
+          field.extraAttributes.options = field.extraAttributes.options.map(option =>
+            typeof option === "object" ? option.label : option
+          );
+        }
+      }
+      return field;
+    });
 
     // Remove any invalid field types (extra safety check)
     const allowedTypes = [
@@ -176,8 +202,6 @@ const generateFormWithAI = async (req, res) => {
     
     const filteredFields = generatedFields.filter(field => allowedTypes.includes(field.type));
 
-    const formId = generateIdFromLabel(domainName);
-    
     const newForm = new Form({
       userId: req.user._id,
       formName: formName,
