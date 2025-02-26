@@ -138,7 +138,7 @@ const generateFormWithAI = async (req, res) => {
 
     **Important Rules**:
     - Only use these field types: 
-      **"TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField", "SpacerField", "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader", "RadioField", "MultiSelectCheckboxField".**
+      **"TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField", "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader", "RadioField", "MultiSelectCheckboxField".**
     - **DO NOT** include "Button", "Submit", or any other field types.
     - Ensure a structured JSON response with domain-relevant fields.
     - For "SelectField" and "MultiSelectCheckboxField", return 'options' as a simple **array of strings**, NOT objects.
@@ -152,13 +152,6 @@ const generateFormWithAI = async (req, res) => {
           "label": "Full Name",
           "required": true,
           "placeHolder": "Enter your full name"
-        }
-      },
-      {
-        "id": "8915",
-        "type": "SpacerField",
-        "extraAttributes": {
-          "height": 20
         }
       },
       {
@@ -202,7 +195,7 @@ const generateFormWithAI = async (req, res) => {
 
     // Remove any invalid field types (extra safety check)
     const allowedTypes = [
-      "TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField", "SpacerField",
+      "TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField",
       "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader",
       "RadioField", "MultiSelectCheckboxField"
     ];
