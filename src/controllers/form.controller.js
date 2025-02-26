@@ -138,7 +138,7 @@ const generateFormWithAI = async (req, res) => {
 
     **Important Rules**:
     - Only use these field types: 
-      **"TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField", "SpacerField", "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader", "RadioField", "MultiSelectCheckboxField".**
+      **"TextField", "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader", "RadioField", "MultiSelectCheckboxField".**
     - **DO NOT** include "Button", "Submit", or any other field types.
     - Ensure a structured JSON response with domain-relevant fields.
     - For "SelectField" and "MultiSelectCheckboxField", return 'options' as a simple **array of strings**, NOT objects.
@@ -174,7 +174,7 @@ const generateFormWithAI = async (req, res) => {
     **Only return JSON. Do NOT include explanations or markdown formatting.**
     `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
     const result = await model.generateContent(prompt);
     let responseText = await result.response.text();
 
@@ -195,9 +195,8 @@ const generateFormWithAI = async (req, res) => {
 
     // Remove any invalid field types (extra safety check)
     const allowedTypes = [
-      "TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField", "SpacerField",
-      "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader",
-      "RadioField", "MultiSelectCheckboxField"
+      "TextField", "NumberField", "TextAreaField", "DateField", "SelectField", 
+      "CheckboxField", "ImageUploader", "RadioField", "MultiSelectCheckboxField"
     ];
     
     const filteredFields = generatedFields.filter(field => allowedTypes.includes(field.type));
