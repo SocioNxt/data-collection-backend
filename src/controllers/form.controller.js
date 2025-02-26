@@ -14,8 +14,8 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
 // Get Form Stats
 const getFormStats = asyncHandler(async (req, res) => {
   try {
-    const totalForms = await Form.countDocuments({ $or: [ {userId: req.user._id}, {coordinatorId: req.user._id}] });
-    const publishedForms = await Form.countDocuments({ $or: [ {userId: req.user._id}, {coordinatorId: req.user._id}], published: true });
+    const totalForms = await Form.countDocuments({ $or: [{ userId: req.user._id }, { coordinatorId: req.user._id }] });
+    const publishedForms = await Form.countDocuments({ $or: [{ userId: req.user._id }, { coordinatorId: req.user._id }], published: true });
     res.json(new ApiResponse(200, { totalForms, publishedForms }, "Form stats fetched successfully"));
   } catch (error) {
     throw new ApiError(500, "Server Error", error);
@@ -49,7 +49,7 @@ const getForms = asyncHandler(async (req, res) => {
 // Get Form by Slug (formId)
 const getFormBySlug = asyncHandler(async (req, res) => {
   try {
-    const form = await Form.findOne({ formId: req.params.slug, $or: [ {userId: req.user._id}, {coordinatorId: req.user._id}] });
+    const form = await Form.findOne({ formId: req.params.slug, $or: [{ userId: req.user._id }, { coordinatorId: req.user._id }] });
     if (!form) throw new ApiError(404, "Form not found");
     res.json(new ApiResponse(200, form, "Form fetched successfully"));
   } catch (error) {
@@ -138,7 +138,7 @@ const generateFormWithAI = async (req, res) => {
 
     **Important Rules**:
     - Only use these field types: 
-      **"TextField", "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader", "RadioField", "MultiSelectCheckboxField".**
+      **"TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField", "SpacerField", "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader", "RadioField", "MultiSelectCheckboxField".**
     - **DO NOT** include "Button", "Submit", or any other field types.
     - Ensure a structured JSON response with domain-relevant fields.
     - For "SelectField" and "MultiSelectCheckboxField", return 'options' as a simple **array of strings**, NOT objects.
@@ -152,6 +152,13 @@ const generateFormWithAI = async (req, res) => {
           "label": "Full Name",
           "required": true,
           "placeHolder": "Enter your full name"
+        }
+      },
+      {
+        "id": "8915",
+        "type": "SpacerField",
+        "extraAttributes": {
+          "height": 20
         }
       },
       {
@@ -195,10 +202,11 @@ const generateFormWithAI = async (req, res) => {
 
     // Remove any invalid field types (extra safety check)
     const allowedTypes = [
-      "TextField", "NumberField", "TextAreaField", "DateField", "SelectField", 
-      "CheckboxField", "ImageUploader", "RadioField", "MultiSelectCheckboxField"
+      "TextField", "TitleField", "SubTitleField", "ParagraphField", "SeparatorField", "SpacerField",
+      "NumberField", "TextAreaField", "DateField", "SelectField", "CheckboxField", "ImageUploader",
+      "RadioField", "MultiSelectCheckboxField"
     ];
-    
+
     const filteredFields = generatedFields.filter(field => allowedTypes.includes(field.type));
 
     const newForm = new Form({
@@ -220,12 +228,12 @@ const generateFormWithAI = async (req, res) => {
 };
 
 export {
-    getFormBySlug,
-    createForm,
-    getForms,
-    publishForm,
-    getFormContentByUrl,
-    getFormStats,
-    updateFormContent,
-    generateFormWithAI
+  getFormBySlug,
+  createForm,
+  getForms,
+  publishForm,
+  getFormContentByUrl,
+  getFormStats,
+  updateFormContent,
+  generateFormWithAI
 }
